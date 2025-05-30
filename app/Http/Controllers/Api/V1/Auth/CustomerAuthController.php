@@ -37,7 +37,7 @@ class CustomerAuthController extends Controller
             return response()->json([
                 'message' => 'Login successful',
                 'token' => $token,
-                'admin' => [
+                'customer' => [
                     'id' => $customer->id,
                     'name' => $customer->name,
                     'email' => $customer->email,
