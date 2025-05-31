@@ -3,15 +3,13 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-
-
-class CategoryController extends Controller
+class SubCategoryController extends Controller
 {
     use AuthorizesRequests;
     /**
@@ -19,11 +17,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
-
-        $this->authorize('viewAny', Category::class);
+        $this->authorize('viewAny', SubCategory::class);
         try {
-            $categories = Category::all();
-            return response()->json($categories, 200);
+            $subCategories = SubCategory::all();
+            return response()->json($subCategories, 200);
         } catch (\Throwable $e) {
             return response()->json([
                 'message' => 'Something went wrong. Please try again later.',
@@ -32,15 +29,18 @@ class CategoryController extends Controller
         }
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $this->authorize('create', Category::class);
+        $this->authorize('create', SubCategory::class);
         try {
 
 
             $validated = $request->validate([
-                'name' => 'required|string|max:255|unique:categories,name',
-                'description' => 'nullable|string',
+                'name' => 'required|string|max:255|unique:sub_categories,name',
+                'category_id' => 'required|exists:categories,id',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             ]);
 
@@ -49,16 +49,16 @@ class CategoryController extends Controller
 
             $imagePath = isset($validated['image'])
                 ? Storage::disk($disk)->url(
-                    $validated['image']->store("{$directory}/category/{$validated['name']}", $disk)
+                    $validated['image']->store("{$directory}/subCategory/{$validated['name']}", $disk)
                 )
                 : null;
-            $category = Category::create([
+            $subCategory = SubCategory::create([
                 'name' => $validated['name'],
-                'description' => $validated['description'] ?? null,
+                'category_id' => $validated['category_id'] ?? null,
                 'image' => $imagePath,
             ]);
 
-            return response()->json($category, 201);
+            return response()->json($subCategory, 201);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
@@ -73,9 +73,12 @@ class CategoryController extends Controller
         }
     }
 
+    /**
+     * Display the specified resource.
+     */
     public function show(string $id)
     {
-        $category = Category::findOrFail($id);
+        $category = SubCategory::findOrFail($id);
         $this->authorize('view', $category);
 
         try {
@@ -94,14 +97,14 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $category = Category::findOrFail($id);
-        $this->authorize('update', $category);
+        $subCategory = SubCategory::findOrFail($id);
+        $this->authorize('update', $subCategory);
         try {
 
 
             $validated = $request->validate([
-                'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
-                'description' => 'nullable|string',
+                'name' => 'required|string|max:255|unique:categories,name,' . $subCategory->id,
+                'category_id' => 'required|exists:categories,id',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             ]);
 
@@ -110,23 +113,23 @@ class CategoryController extends Controller
 
             if (isset($validated['image'])) {
 
-                if ($category->image) {
-                    Storage::disk($disk)->delete($category->image);
+                if ($subCategory->image) {
+                    Storage::disk($disk)->delete($subCategory->image);
                 }
                 $imagePath = Storage::disk($disk)->url(
                     $validated['image']->store("{$directory}/category/{$validated['name']}", $disk)
                 );
             } else {
-                $imagePath = $category->image;
+                $imagePath = $subCategory->image;
             }
 
-            $category->update([
+            $subCategory->update([
                 'name' => $validated['name'],
-                'description' => $validated['description'],
+                'category_id' => $validated['category_id'] ?? null,
                 'image' => $imagePath,
             ]);
 
-            return response()->json($category, 200);
+            return response()->json($subCategory, 200);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
@@ -140,17 +143,19 @@ class CategoryController extends Controller
         }
     }
 
-
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(string $id)
     {
-        $category = Category::findOrFail($id);
-        $this->authorize('delete', $category);
+        $subCategory = SubCategory::findOrFail($id);
+        $this->authorize('delete', $subCategory);
 
         try {
-            if ($category->image) {
-                Storage::disk(config('filesystems.default'))->delete($category->image);
+            if ($subCategory->image) {
+                Storage::disk(config('filesystems.default'))->delete($subCategory->image);
             }
-            $category->delete();
+            $subCategory->delete();
 
             return response()->json(['message' => 'Category deleted successfully'], 200);
         } catch (\Throwable $e) {

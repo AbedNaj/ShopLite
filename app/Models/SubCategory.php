@@ -2,31 +2,30 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\HasSlug;
 use App\Traits\Ulid;
 
-class Category extends Model
+class SubCategory extends Model
 {
-    /** @use HasFactory<\Database\Factories\CategoryFactory> */
+    /** @use HasFactory<\Database\Factories\SubCategoryFactory> */
     use HasFactory, Ulid, HasSlug;
 
     protected $fillable = [
         'id',
         'name',
-        'description',
-        'image',
+        'slug',
+        'category_id',
     ];
-    protected string $slugSource = 'name';
 
     public function getRouteKeyName(): string
     {
         return 'slug';
     }
-    public function subCategory()
+
+    public function category()
     {
-        return $this->hasMany(SubCategory::class);
+        return $this->belongsTo(Category::class);
     }
 }

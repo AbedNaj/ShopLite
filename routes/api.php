@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\Auth\AdminAuthController;
 use App\Http\Controllers\Api\V1\Auth\CustomerAuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Api\V1\Admin\SubCategoryController as AdminSubCategoryController;
 
 Route::prefix('v1')->group(function () {
 
@@ -17,6 +18,8 @@ Route::prefix('v1')->group(function () {
             Route::post('/logout', [AdminAuthController::class, 'logout']);
 
             Route::apiResource('/categories', AdminCategoryController::class);
+
+            Route::apiResource('/subCategories', AdminSubCategoryController::class);
         });
     });
 

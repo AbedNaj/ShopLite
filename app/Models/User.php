@@ -8,11 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
+use App\Traits\Ulid;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use  HasApiTokens,  HasFactory, Notifiable;
+    use  HasApiTokens, Ulid, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -34,17 +35,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-    protected $keyType = 'string';
-    public $incrementing = false;
 
-    protected static function booted(): void
-    {
-        static::creating(function ($model) {
-            if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = (string) Str::ulid();
-            }
-        });
-    }
     /**
      * Get the attributes that should be cast.
      *

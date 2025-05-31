@@ -77,14 +77,7 @@ This document describes the database structure of the ShopLite E-Commerce system
 
 ---
 
-## 🔗 product_sub_category (Pivot Table)
 
-| Column         | Type      |
-|----------------|-----------|
-| product_id     | UUID (FK) |
-| sub_category_id| UUID (FK) |
-
----
 
 ## 🛒 Carts
 
