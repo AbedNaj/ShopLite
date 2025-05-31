@@ -1,3 +1,97 @@
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+
+// البيانات (data)
+const activeNav = ref('Home')
+const mobileMenuOpen = ref(false)
+const searchOpen = ref(false)
+const searchQuery = ref('')
+const cartCount = ref(3)
+const newsletterEmail = ref('')
+
+// العناصر (navs, links)
+const navItems = [
+    { name: 'Home', icon: 'pi-home' },
+    { name: 'Products', icon: 'pi-box' },
+    { name: 'Categories', icon: 'pi-list' },
+    { name: 'About', icon: 'pi-info-circle' },
+    { name: 'Contact', icon: 'pi-envelope' }
+]
+
+const quickLinks = [
+    { name: 'New Arrivals', icon: 'pi-star' },
+    { name: 'Best Sellers', icon: 'pi-heart' },
+    { name: 'Sale Items', icon: 'pi-tag' },
+    { name: 'Gift Cards', icon: 'pi-gift' }
+]
+
+const supportLinks = [
+    { name: 'Help Center', icon: 'pi-question-circle' },
+    { name: 'Track Order', icon: 'pi-map-marker' },
+    { name: 'Returns', icon: 'pi-refresh' },
+    { name: 'Contact Us', icon: 'pi-phone' }
+]
+
+const socialLinks = [
+    { name: 'Facebook', icon: 'pi-facebook' },
+    { name: 'Twitter', icon: 'pi-twitter' },
+    { name: 'Instagram', icon: 'pi-instagram' },
+    { name: 'LinkedIn', icon: 'pi-linkedin' }
+]
+
+// computed
+const currentYear = computed(() => new Date().getFullYear())
+
+// methods
+function toggleMobileMenu() {
+    mobileMenuOpen.value = !mobileMenuOpen.value
+}
+
+function toggleSearch() {
+    searchOpen.value = !searchOpen.value
+    if (searchOpen.value) {
+        nextTick(() => {
+            const input = document.querySelector('input[type="text"]') as HTMLInputElement
+            if (input) input.focus()
+        })
+    }
+}
+
+function toggleCart() {
+    console.log('Cart clicked')
+}
+
+function performSearch() {
+    if (searchQuery.value.trim()) {
+        console.log('Searching for:', searchQuery.value)
+        searchOpen.value = false
+    }
+}
+
+function isValidEmail(email: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
+function subscribeNewsletter() {
+    if (newsletterEmail.value && isValidEmail(newsletterEmail.value)) {
+        console.log('Newsletter subscription:', newsletterEmail.value)
+        newsletterEmail.value = ''
+    }
+}
+
+// mounted
+onMounted(() => {
+    document.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement
+        if (!document.body.contains(target)) {
+            mobileMenuOpen.value = false
+            searchOpen.value = false
+        }
+    })
+})
+</script>
+
+
 <template>
     <div class="flex flex-col min-h-screen bg-gradient-to-br from-bg via-surface to-bg">
         <!-- Header with glass morphism effect -->
@@ -166,93 +260,3 @@
         </footer>
     </div>
 </template>
-
-<script>
-export default {
-    name: 'ShopLiteLayout',
-    data() {
-        return {
-            activeNav: 'Home',
-            mobileMenuOpen: false,
-            searchOpen: false,
-            searchQuery: '',
-            cartCount: 3,
-            newsletterEmail: '',
-            navItems: [
-                { name: 'Home', icon: 'pi-home' },
-                { name: 'Products', icon: 'pi-box' },
-                { name: 'Categories', icon: 'pi-list' },
-                { name: 'About', icon: 'pi-info-circle' },
-                { name: 'Contact', icon: 'pi-envelope' }
-            ],
-            quickLinks: [
-                { name: 'New Arrivals', icon: 'pi-star' },
-                { name: 'Best Sellers', icon: 'pi-heart' },
-                { name: 'Sale Items', icon: 'pi-tag' },
-                { name: 'Gift Cards', icon: 'pi-gift' }
-            ],
-            supportLinks: [
-                { name: 'Help Center', icon: 'pi-question-circle' },
-                { name: 'Track Order', icon: 'pi-map-marker' },
-                { name: 'Returns', icon: 'pi-refresh' },
-                { name: 'Contact Us', icon: 'pi-phone' }
-            ],
-            socialLinks: [
-                { name: 'Facebook', icon: 'pi-facebook' },
-                { name: 'Twitter', icon: 'pi-twitter' },
-                { name: 'Instagram', icon: 'pi-instagram' },
-                { name: 'LinkedIn', icon: 'pi-linkedin' }
-            ]
-        }
-    },
-    computed: {
-        currentYear() {
-            return new Date().getFullYear()
-        }
-    },
-    methods: {
-        toggleMobileMenu() {
-            this.mobileMenuOpen = !this.mobileMenuOpen
-        },
-        toggleSearch() {
-            this.searchOpen = !this.searchOpen
-            if (this.searchOpen) {
-                this.$nextTick(() => {
-                    const input = this.$el.querySelector('input[type="text"]')
-                    if (input) input.focus()
-                })
-            }
-        },
-        toggleCart() {
-
-            console.log('Cart clicked')
-        },
-        performSearch() {
-            if (this.searchQuery.trim()) {
-                console.log('Searching for:', this.searchQuery)
-
-                this.searchOpen = false
-            }
-        },
-        subscribeNewsletter() {
-            if (this.newsletterEmail && this.isValidEmail(this.newsletterEmail)) {
-                console.log('Newsletter subscription:', this.newsletterEmail)
-                // Implement newsletter subscription
-                this.newsletterEmail = ''
-            }
-        },
-        isValidEmail(email) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-        }
-    },
-    mounted() {
-
-        document.addEventListener('click', (e) => {
-            if (!this.$el.contains(e.target)) {
-                this.mobileMenuOpen = false
-                this.searchOpen = false
-            }
-        })
-    }
-}
-</script>

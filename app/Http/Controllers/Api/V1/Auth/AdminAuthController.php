@@ -52,6 +52,7 @@ class AdminAuthController extends Controller
             ]);
             return response()->json([
                 'message' => 'Something went wrong. Please try again later.',
+
             ], 500);
         }
     }

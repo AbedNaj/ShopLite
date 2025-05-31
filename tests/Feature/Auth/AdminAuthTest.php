@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class AdminAuthTest extends TestCase
@@ -20,6 +21,7 @@ class AdminAuthTest extends TestCase
 
 
         $admin = User::factory()->create([
+            'id' => Str::ulid(),
             'email' => 'admin@example.com',
             'name' => 'Admin User',
             'password' => bcrypt('password'),
