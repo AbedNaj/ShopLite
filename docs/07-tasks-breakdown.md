@@ -14,11 +14,18 @@
 - [x] Create roles table (admin, customer)
 - [x] Assign roles to users
 - [x] Admin-only middleware
-- [ ] Admin login/logout API
+- [x] Admin login/logout API
 - [ ] Protect routes using policies
 
 #### Categories
 - [x] Categories table + model + controller
+- [x] API: index, store, update, delete, show
+- [x] Image upload (DigitalOcean Spaces)
+- [x] Authorization using Policy
+- [x] Feature tests for admin & customer
+
+#### SubCategories
+- [x] SubCategories table + model + controller
 - [x] API: index, store, update, delete, show
 - [x] Image upload (DigitalOcean Spaces)
 - [x] Authorization using Policy

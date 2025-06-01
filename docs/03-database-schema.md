@@ -63,20 +63,44 @@ This document describes the database structure of the ShopLite E-Commerce system
 
 ## 🛍️ Products
 
-| Column       | Type      | Description                      |
-|--------------|-----------|----------------------------------|
-| id           | UUID      | Primary key                      |
-| name         | string    | Product name                     |
-| slug         | string    | SEO-friendly URL                 |
-| description  | text      | Full description                 |
-| price        | decimal   |                                 |
-| stock        | integer   | Current available quantity       |
-| image        | string    | Path to main product image       |
-| status       | enum      | 'active', 'inactive'             |
-| created_at   | timestamp |                                  |
+| Column          | Type        | Description                                       |
+|-----------------|-------------|---------------------------------------------------|
+| id              | ULID        | Primary key                                       |
+| sub_category_id | ULID (FK)   | References the subcategory                        |
+| name            | string      | Product name (must be unique)                     |
+| slug            | string      | SEO-friendly unique URL                           |
+| sku             | string      | Stock Keeping Unit (unique identifier)            |
+| description     | text        | Full product description (optional)               |
+| price           | decimal     | Regular price of the product                      |
+| discount_price  | decimal     | Optional discounted price                         |
+| stock           | integer     | Available quantity (must be ≥ 0)                  |
+| status          | enum        | Product visibility: `active`, `inactive`, `draft` |
+| created_at      | timestamp   | Creation timestamp                                |
+| updated_at      | timestamp   | Last update timestamp                             |
 
 ---
 
+## 🖼️ Product Images
+
+| Column       | Type        | Description                                           |
+|--------------|-------------|-------------------------------------------------------|
+| id           | ULID        | Primary key                                           |
+| product_id   | ULID (FK)   | References the related product                       |
+| image_path   | string      | Path or URL to the stored image                      |
+| is_primary   | boolean     | Indicates if this is the main image (default: false) |
+| order        | integer     | Optional display order (default: 0)                  |
+| created_at   | timestamp   | Creation timestamp                                   |
+| updated_at   | timestamp   | Last update timestamp                                |
+
+---
+
+## ✅ Notes
+
+- Each product can have **multiple images**, stored in the `product_images` table.
+- Only one image per product should have `is_primary = true`, used as the main display image.
+- `stock` is stored as an unsigned integer, and negative values are not allowed.
+- `status` is used to control product visibility across the storefront and admin panel.
+- All IDs are stored as **ULIDs** for better scalability and sorting performance.
 
 
 ## 🛒 Carts

@@ -19,7 +19,7 @@ class SubCategoryController extends Controller
     {
         $this->authorize('viewAny', SubCategory::class);
         try {
-            $subCategories = SubCategory::all();
+            $subCategories = SubCategory::with('category')->get();
             return response()->json($subCategories, 200);
         } catch (\Throwable $e) {
             return response()->json([
