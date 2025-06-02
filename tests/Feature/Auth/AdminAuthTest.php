@@ -36,6 +36,6 @@ class AdminAuthTest extends TestCase
 
 
         $response->assertStatus(200);
-        $response->assertJsonStructure(['token', 'admin']);
+        $response->assertJsonStructure(['token', 'data']);
     }
 }

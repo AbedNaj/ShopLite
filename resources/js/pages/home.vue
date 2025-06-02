@@ -2,14 +2,14 @@
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import { ref, onMounted } from 'vue';
 
-// Reactive data
+
 const currentSlide = ref(0);
 const featuredProducts = ref([]);
 const categories = ref([]);
 const testimonials = ref([]);
 const currentTestimonial = ref(0);
 
-// Hero slider data
+
 const heroSlides = ref([
     {
         id: 1,
@@ -355,7 +355,7 @@ const quickView = (product) => {
                                 <div class="flex items-center space-x-2">
                                     <span class="text-2xl font-bold text-primary">${{ product.price }}</span>
                                     <span class="text-sm text-secondary line-through">${{ product.originalPrice
-                                        }}</span>
+                                    }}</span>
                                 </div>
                                 <button @click="addToCart(product)"
                                     class="bg-gradient-to-r from-primary to-accent text-white px-4 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105">

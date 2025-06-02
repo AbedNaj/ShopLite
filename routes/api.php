@@ -12,13 +12,15 @@ Route::prefix('v1')->group(function () {
 
     // Admin Routes
     Route::prefix('admin')->group(function () {
+
+
         Route::post('/login', [AdminAuthController::class, 'login']);
 
 
 
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('/logout', [AdminAuthController::class, 'logout']);
-
+            Route::get('/me', [AdminAuthController::class, 'me']);
             Route::apiResource('/categories', AdminCategoryController::class);
 
             Route::apiResource('/subCategories', AdminSubCategoryController::class);

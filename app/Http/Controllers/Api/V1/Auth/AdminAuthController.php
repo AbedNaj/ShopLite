@@ -8,55 +8,52 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class AdminAuthController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    use AuthorizesRequests;
     public function login(Request $request)
     {
-        try {
-            $validated =  $request->validate([
-                'email' => 'required|email',
-                'password' => 'required|string',
-            ]);
 
-            $adminID = Role::where('name', 'admin')->value('id');
 
-            $admin = User::where('email', $validated['email'])
-                ->where('role_id', $adminID)
-                ->first();
+        $validated = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string|min:8',
+        ]);
 
-            if (! $admin || ! Hash::check($validated['password'], $admin->password)) {
-                return response()->json(['message' => 'Invalid credentials'], 401);
-            }
+        $adminID = Role::where('name', 'admin')->value('id');
 
-            $token = $admin->createToken('admin_token')->plainTextToken;
+        $admin = User::where('email', $validated['email'])
+            ->where('role_id', $adminID)
+            ->first();
 
-            return response()->json([
-                'message' => 'Login successful',
-                'token' => $token,
-                'admin' => [
-                    'id' => $admin->id,
-                    'name' => $admin->name,
-                    'email' => $admin->email,
-
-                ],
-            ]);
-        } catch (\Throwable $e) {
-
-            Log::error('Admin login error: ' . $e->getMessage(), [
-                'request' => $request->all(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-            return response()->json([
-                'message' => 'Something went wrong. Please try again later.',
-
-            ], 500);
+        if (! $admin || ! Hash::check($validated['password'], $admin->password)) {
+            return response()->json(['message' => 'Invalid credentials'], 401);
         }
+
+        $token = $admin->createToken('admin_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login successful',
+            'token' => $token,
+            'data' => [
+                'id' => $admin->id,
+                'name' => $admin->name,
+                'email' => $admin->email,
+            ],
+        ]);
     }
 
+
+    public function me(Request $request)
+    {
+
+        return response()->json([
+            'data' => $request->user(),
+        ]);
+    }
     public function logout(Request $request)
     {
 

@@ -33,11 +33,11 @@
 
 
 #### Products
-- [ ] Products table + model + controller
-- [ ] CRUD API with image support
-- [ ] Categories relation
-- [ ] Inventory and status fields
-- [ ] Authorization + tests
+- [x] Products table + model + controller
+- [x] CRUD API with image support
+- [x] Categories relation
+- [x] Inventory and status fields
+- [x] Authorization + tests
 
 #### Orders & Customers
 - [ ] Orders table + model + controller
