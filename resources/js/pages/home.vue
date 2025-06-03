@@ -401,7 +401,7 @@ const quickView = (product) => {
             </div>
         </section>
 
-        <!-- Testimonials -->
+
         <section class="py-20 bg-bg">
             <div class="container mx-auto px-4">
                 <div class="text-center mb-16">

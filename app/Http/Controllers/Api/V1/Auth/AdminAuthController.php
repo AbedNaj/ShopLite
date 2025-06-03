@@ -20,7 +20,7 @@ class AdminAuthController extends Controller
 
         $validated = $request->validate([
             'email' => 'required|email',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string',
         ]);
 
         $adminID = Role::where('name', 'admin')->value('id');
