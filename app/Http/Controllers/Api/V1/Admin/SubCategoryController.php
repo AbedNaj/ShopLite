@@ -17,7 +17,7 @@ class SubCategoryController extends Controller
     {
         $this->authorize('viewAny', SubCategory::class);
 
-        $subCategories = SubCategory::with('category')->get();
+        $subCategories = SubCategory::with('category:id,name')->orderByDesc('created_at')->paginate(10);
         return new SubCategoryResource($subCategories);
     }
 
@@ -51,10 +51,10 @@ class SubCategoryController extends Controller
 
     public function show(string $id)
     {
-        $subCategory = SubCategory::findOrFail($id);
+        $subCategory = SubCategory::with('category:id,name')->findOrFail($id);
         $this->authorize('view', $subCategory);
 
-        return response()->json($subCategory, 200);
+        return new SubCategoryResource($subCategory);
     }
 
     public function update(Request $request, string $id)

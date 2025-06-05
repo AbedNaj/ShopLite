@@ -57,6 +57,21 @@ const route = useRoute()
                     <i class="pi pi-tags mr-3 text-base"></i>
                     Categories
                 </router-link>
+
+                <router-link :to="{ name: 'admin.subCategory.index' }"
+                    class="group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors duration-200"
+                    :style="{
+                        backgroundColor: route.path.startsWith('/admin/sub-category')
+                            ? 'var(--color-sidebar-primary)'
+                            : 'transparent',
+                        color: route.path.startsWith('/admin/sub-category')
+                            ? 'var(--color-sidebar-primary-foreground)'
+                            : 'var(--color-sidebar-foreground)'
+                    }">
+                    <i class="pi pi-sitemap mr-3 text-base"></i>
+                    Sub Categories
+                </router-link>
+
             </div>
         </nav>
     </div>

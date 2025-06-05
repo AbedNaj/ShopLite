@@ -21,7 +21,18 @@ Route::prefix('v1')->group(function () {
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('/logout', [AdminAuthController::class, 'logout']);
             Route::get('/me', [AdminAuthController::class, 'me']);
-            Route::apiResource('/categories', AdminCategoryController::class);
+
+
+
+            Route::prefix('categories/actions')->group(function () {
+                // Fetch category ID and name for dropdown selects
+                Route::get('/for-select', [AdminCategoryController::class, 'forSelect']);
+            });
+
+            Route::apiResource('/categories', AdminCategoryController::class)->whereUlid('category');
+
+
+
 
             Route::apiResource('/subCategories', AdminSubCategoryController::class);
 

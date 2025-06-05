@@ -1,24 +1,32 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import DefaultHeader from '@/components/admin/default-header.vue';
 import Button from '@/components/ui/button/Button.vue';
 import Input from '@/components/ui/input/Input.vue';
 import TextArea from '@/components/ui/textarea/Textarea.vue';
-import Select from '@/components/ui/select/Select.vue';
-import { CategoryStatusMap } from '@/enums/appEnums';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
 import { useRouter } from 'vue-router';
 import axios from '@/axios';
 import { useToast } from 'vue-toastification'
-const toast = useToast({ position: 'bottom-right' })
 
+
+const toast = useToast({ position: 'bottom-right' })
 
 const router = useRouter();
 
 const form = ref({
     name: '',
-    description: '',
+    category_id: '',
     image: null,
-    is_active: true,
+
 });
 
 const errors = ref({});
@@ -26,35 +34,46 @@ const loading = ref(false);
 
 const handleImageChange = (event) => {
     form.value.image = event.target.files[0];
-};
 
+
+};
+const categories = ref([]);
+async function fetchCategoryData() {
+    const res = await axios.get('/admin/categories/actions/for-select');
+    categories.value = res.data.data;
+}
 const submit = async () => {
     loading.value = true;
     errors.value = {};
 
     const formData = new FormData();
     formData.append('name', form.value.name);
-    formData.append('description', form.value.description);
+    formData.append('category_id', form.value.category_id);
     if (form.value.image) {
         formData.append('image', form.value.image);
     }
 
     try {
-        await axios.post('/admin/categories', formData);
-        router.push({ name: 'admin.categories' });
-        toast.success('Category Created successfully');
+        await axios.post('/admin/subCategories', formData);
+        router.push({ name: 'admin.subCategory.index' });
+        toast.success('SubCategory Created successfully');
     } catch (err) {
         if (err.response?.status === 422) {
+
             errors.value = err.response.data.errors;
         }
     } finally {
         loading.value = false;
     }
 };
+
+onMounted(fetchCategoryData); 
 </script>
 
 <template>
-    <DefaultHeader title="Create Category" description="Add a new product category." />
+
+
+    <DefaultHeader title="SubCategory Create" description="Add a new product SubCategory." />
 
     <div class="bg-surface p-6 rounded-xl shadow-sm max-w-2xl mx-auto">
         <div class="space-y-4">
@@ -63,12 +82,24 @@ const submit = async () => {
                 <Input v-model="form.name" label="Name" placeholder="Enter category name" />
                 <p class="text-sm mt-1 text-red-500" v-if="errors.name">{{ errors.name?.[0] }}</p>
             </div>
-            <div>
-                <label class="block text-sm font-medium mb-1">Description (optional) </label>
-                <TextArea v-model="form.description" label="Description" placeholder="Enter description (optional)" />
-                <p class="text-sm mt-1 text-red-500" v-if="errors.description">{{ errors.description?.[0] }}</p>
-            </div>
 
+            <div>
+                <Select v-model="form.category_id">
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select a Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>Categories</SelectLabel>
+
+                            <SelectItem v-for="cat in categories" :key="cat.id" :value="cat.id">
+                                {{ cat.name }}
+                            </SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+                <p class="text-sm mt-1 text-red-500" v-if="errors.category_id">{{ errors.category_id?.[0] }}</p>
+            </div>
 
             <div>
                 <label class="block text-sm font-medium mb-1">Image (optional)</label>

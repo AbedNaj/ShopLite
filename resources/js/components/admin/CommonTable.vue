@@ -9,7 +9,7 @@ const toast = useToast({ position: 'bottom-right' })
 const router = useRouter()
 const showModal = ref(false)
 const pendingDeleteId = ref(null)
-
+const deleting = ref(false)
 function askDelete(id) {
     pendingDeleteId.value = id
     showModal.value = true
@@ -20,30 +20,40 @@ function cancelDelete() {
 
 
 async function confirmDelete() {
-    await deleteCategory(pendingDeleteId.value)
+    await deleteRow(pendingDeleteId.value)
     showModal.value = false
 }
 
-async function deleteCategory(id) {
-
-    await axios.delete(`/admin/categories/${id}`)
+async function deleteRow(id) {
+    deleting.value = true;
+    await axios.delete(`${props.deleteEndPoint}/${id}`)
         .then(() => {
             emit('refresh-data')
             toast.warning('Category has been deleted.');
         })
         .catch(error => {
             toast.error('Failed to delete category');
-        })
+        }).finally(() => {
+            deleting.value = false;
+        });
+
+
 
 }
 
-
+function resolveNestedKey(obj, key) {
+    return key.split('.').reduce((o, i) => (o ? o[i] : ''), obj);
+}
 const props = defineProps({
 
     data: Array,
     columns: Array,
     total: Number,
     editRoute: {
+        type: String,
+        default: 'admin.dashboard'
+    },
+    deleteEndPoint: {
         type: String,
         default: 'admin.dashboard'
     },
@@ -77,7 +87,10 @@ function goToPage(page) {
             <h2 class="text-lg font-semibold">Confirm Deletion</h2>
             <p>Are you sure you want to delete this item?</p>
             <div class="flex justify-center space-x-4">
-                <Button @click="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded">Yes, Delete</Button>
+                <Button @click="confirmDelete" :disabled="deleting" class="px-4 py-2 bg-red-600 text-white rounded">
+                    {{ deleting ? 'Deleting...' : 'Yes, Delete' }}
+
+                </Button>
                 <Button @click="cancelDelete" class="px-4 py-2 bg-gray-300 rounded">Cancel</Button>
             </div>
         </div>
@@ -113,12 +126,12 @@ function goToPage(page) {
                                 </span>
                             </template>
                             <template v-else>
-                                {{ row[column.key] }}
+                                {{ resolveNestedKey(row, column.key) }}
                             </template>
                         </td>
 
                         <td v-if="$slots.actions" class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                            <router-link :to="{ name: 'admin.category.edit', params: { id: row.id } }"
+                            <router-link :to="{ name: editRoute, params: { id: row.id } }"
                                 class="text-primary hover:cursor-pointer hover:underline">Edit</router-link>
                             <button @click="askDelete(row.id)"
                                 class="text-destructive ml-2 hover:cursor-pointer hover:underline">Delete</button>

@@ -116,4 +116,13 @@ class CategoryController extends Controller
 
         return response()->json(['message' => 'Category deleted successfully'], 200);
     }
+
+    public function forSelect()
+    {
+        $this->authorize('viewAny', Category::class);
+
+        $categories = Category::select('id', 'name')->orderBy('name')->get();
+
+        return new CategoryResource($categories);
+    }
 }

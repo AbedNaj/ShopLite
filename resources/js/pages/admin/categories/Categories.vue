@@ -4,17 +4,16 @@ import DefaultHeader from '@/components/admin/default-header.vue'
 import commonTable from '@/components/admin/CommonTable.vue'
 import { CategoryStatusMap } from '@/enums/appEnums'
 import { useRouter } from 'vue-router'
+import { ref, onMounted, watch } from 'vue'
+import axios from '@/axios'
 const router = useRouter()
 
 function goToCreateCategory() {
     router.push({ name: 'admin.category.create' })
 }
 
-function goToEditCategory(categoryId) {
-    router.push({ name: 'admin.category.edit', params: { id: categoryId } })
-}
-import { ref, onMounted, watch } from 'vue'
-import axios from '@/axios'
+
+
 
 const categories = ref([])
 const totalCategories = ref()
@@ -40,7 +39,7 @@ async function fetchCategories() {
 
 
     } catch (error) {
-        console.error('Error fetching categories:', error)
+        console.error('Error fetching categories')
 
     }
 }
@@ -55,9 +54,9 @@ watch(currentPage, fetchCategories)
 
     </DefaultHeader>
 
-    <commonTable @refresh-data="fetchCategories" edit-route="admin.category.add" :columns="columns" :data="categories"
-        :enumMaps="enumMaps" :total="totalCategories" :perPage="perPage" :currentPage="currentPage"
-        @page-change="(p) => currentPage = p">
+    <commonTable @refresh-data="fetchCategories" delete-end-point="admin/categories" edit-route="admin.category.edit"
+        :columns="columns" :data="categories" :enumMaps="enumMaps" :total="totalCategories" :perPage="perPage"
+        :currentPage="currentPage" @page-change="(p) => currentPage = p">
         <template #actions="{ row }">
 
         </template>

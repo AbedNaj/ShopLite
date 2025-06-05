@@ -16,9 +16,11 @@ class SubCategoryFactory extends Factory
      */
     public function definition(): array
     {
+        $name = $this->faker->unique()->name();
+
         return [
-            'name' => $this->faker->word(),
-            'slug' => $this->faker->slug(),
+            'name' => $name,
+            'slug' => \Str::slug($name),
             'category_id' => \App\Models\Category::factory(),
         ];
     }

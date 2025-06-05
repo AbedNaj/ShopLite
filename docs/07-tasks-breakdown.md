@@ -53,19 +53,19 @@
 > Goal: Build full admin UI using Vue 3 + Tailwind + Vue Router + Axios
 
 #### Layout
-- [ ] Admin layout with sidebar + header
-- [ ] Protected routes (admin only)
-- [ ] Basic auth state management (Pinia/localStorage)
+- [x] Admin layout with sidebar + header
+- [x] Protected routes (admin only)
+- [x] Basic auth state management (Pinia/localStorage)
 
 #### Dashboard
 - [ ] Display basic stats (orders count, revenue)
 - [ ] Recent activity or orders preview
 
 #### Categories
-- [ ] List categories in a table
-- [ ] Add/Edit/Delete category modals or pages
-- [ ] Show image previews and upload
-- [ ] Connect to API with Axios
+- [x] List categories in a table
+- [x] Add/Edit/Delete category modals or pages
+- [x] Show image previews and upload
+- [x] Connect to API with Axios
 
 #### Products
 - [ ] Product management table
