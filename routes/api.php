@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Api\V1\Admin\SubCategoryController as AdminSubCategoryController;
 use App\Http\Controllers\api\v1\admin\ProductController as adminProductController;
+use App\Http\Controllers\api\v1\admin\ProductImagesController as adminProductImages;
 
 Route::prefix('v1')->group(function () {
 
@@ -33,10 +34,16 @@ Route::prefix('v1')->group(function () {
 
 
 
+            Route::prefix('subCategories/actions')->group(function () {
+                // Fetch Subcategory ID and name for dropdown selects
+                Route::get('/for-select', [AdminSubCategoryController::class, 'forSelect']);
+            });
 
             Route::apiResource('/subCategories', AdminSubCategoryController::class);
 
             Route::apiResource('/products', adminProductController::class);
+
+            Route::apiResource('/productImages', adminProductImages::class);
         });
     });
 

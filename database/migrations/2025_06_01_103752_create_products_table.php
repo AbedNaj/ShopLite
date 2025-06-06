@@ -20,8 +20,9 @@ return new class extends Migration
             $table->string('sku')->nullable()->unique();
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
-            $table->decimal('discount_price', 10, 2)->nullable();
+            $table->decimal('discount_price', 10, 2)->nullable()->default(0);
             $table->unsignedInteger('stock')->default(0);
+            $table->text('thumbnail')->nullable();
             $table->enum('status', ['active', 'inactive', 'draft'])->default('active');
             $table->timestamps();
         });

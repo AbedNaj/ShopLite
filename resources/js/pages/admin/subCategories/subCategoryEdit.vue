@@ -58,7 +58,7 @@ function fetchSubCategory() {
 
         imagePreview.value = subCategory.image;
     }).catch(error => {
-        console.error('Error fetching category ', error);
+        console.error('Error fetching category ');
     });
 }
 const submit = async () => {

@@ -84,6 +84,7 @@ onMounted(fetchCategoryData);
             </div>
 
             <div>
+                <label class="block text-sm font-medium mb-1">Category </label>
                 <Select v-model="form.category_id">
                     <SelectTrigger>
                         <SelectValue placeholder="Select a Category" />

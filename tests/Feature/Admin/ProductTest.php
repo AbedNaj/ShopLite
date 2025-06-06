@@ -8,6 +8,8 @@ use App\Models\SubCategory;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ProductTest extends TestCase
@@ -40,7 +42,7 @@ class ProductTest extends TestCase
 
     public function test_admin_can_create_product(): void
     {
-
+        Storage::fake('public'); // Fake storage
 
         $user = $this->adminUser();
         $subCategory = SubCategory::factory()->create([
@@ -53,13 +55,15 @@ class ProductTest extends TestCase
             'price' => $this->faker->randomFloat(2, 10, 1000),
             'stock' => $this->faker->numberBetween(1, 100),
             'sub_category_id' => $subCategory->id,
+            'thumbnail' => UploadedFile::fake()->image('thumbnail.jpg'),
         ];
 
         $response = $this->actingAs($user, 'sanctum')
-            ->postJson('/api/v1/admin/products', $data);
+            ->post('/api/v1/admin/products', $data);
 
         $response->assertStatus(201);
     }
+
 
 
     public function test_admin_can_update_product(): void

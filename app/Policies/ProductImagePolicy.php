@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\ProductImage;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -45,7 +46,8 @@ class ProductImagePolicy
      */
     public function delete(User $user, ProductImage $productImage): bool
     {
-        return false;
+        $adminRole = Role::where('name', 'admin')->value('id');
+        return $user->role_id === $adminRole;
     }
 
     /**

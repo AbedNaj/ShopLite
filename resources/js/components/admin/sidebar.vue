@@ -44,6 +44,21 @@ const route = useRoute()
                     Dashboard
                 </router-link>
 
+                <router-link :to="{ name: 'admin.products.index' }"
+                    class="group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors duration-200"
+                    :style="{
+                        backgroundColor: route.path.startsWith('/admin/products')
+                            ? 'var(--color-sidebar-primary)'
+                            : 'transparent',
+                        color: route.path.startsWith('/admin/products')
+                            ? 'var(--color-sidebar-primary-foreground)'
+                            : 'var(--color-sidebar-foreground)'
+                    }">
+                    <i class="pi pi-box mr-3 text-base"></i>
+                    Products
+                </router-link>
+
+
                 <router-link :to="{ name: 'admin.categories' }"
                     class="group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors duration-200"
                     :style="{
@@ -71,6 +86,7 @@ const route = useRoute()
                     <i class="pi pi-sitemap mr-3 text-base"></i>
                     Sub Categories
                 </router-link>
+
 
             </div>
         </nav>
