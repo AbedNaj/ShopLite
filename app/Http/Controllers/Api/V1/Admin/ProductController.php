@@ -115,6 +115,15 @@ class ProductController extends Controller
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
+        if (
+            isset($validated['discount_price']) &&
+
+            $validated['price'] < $validated['discount_price']
+        ) {
+            throw ValidationException::withMessages([
+                'discount_price' => ['Discount price must be less than the actual price.'],
+            ]);
+        }
         $disk = config('filesystems.default');
         $directory = env('DO_DIRECTORY', 'uploads');
 

@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\Api\V1\Admin\OrderController;
 use App\Http\Controllers\Api\V1\Auth\AdminAuthController;
 use App\Http\Controllers\Api\V1\Auth\CustomerAuthController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,8 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('/products', adminProductController::class);
 
             Route::apiResource('/productImages', adminProductImages::class);
+
+            Route::apiResource('/orders', OrderController::class);
         });
     });
 

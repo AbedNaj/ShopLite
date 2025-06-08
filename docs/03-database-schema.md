@@ -75,6 +75,7 @@ This document describes the database structure of the ShopLite E-Commerce system
 | discount_price  | decimal     | Optional discounted price                         |
 | stock           | integer     | Available quantity (must be ≥ 0)                  |
 | status          | enum        | Product visibility: `active`, `inactive`, `draft` |
+| thumbnail       | text        | product thumbnail                                 |
 | created_at      | timestamp   | Creation timestamp                                |
 | updated_at      | timestamp   | Last update timestamp                             |
 

@@ -68,11 +68,11 @@
 - [x] Connect to API with Axios
 
 #### Products
-- [ ] Product management table
-- [ ] Add/Edit/Delete product
+- [x] Product management table
+- [x] Add/Edit/Delete product
 - [ ] Category filter
-- [ ] Image handling
-- [ ] Connect to API
+- [x] Image handling
+- [x] Connect to API
 
 #### Orders
 - [ ] Order listing page
@@ -86,7 +86,7 @@
 > Goal: Create all public-facing API endpoints for the storefront
 
 #### Auth
-- [ ] Customer register/login/logout APIs
+- [x] Customer register/login/logout APIs
 
 #### Products
 - [ ] List all products

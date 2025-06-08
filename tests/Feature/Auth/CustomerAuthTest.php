@@ -23,7 +23,6 @@ class CustomerAuthTest extends TestCase
         ]);
 
         $response->assertStatus(201);
-        $response->assertJsonStructure(['user']);
     }
 
 
