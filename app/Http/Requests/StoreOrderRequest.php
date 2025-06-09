@@ -25,7 +25,7 @@ class StoreOrderRequest extends FormRequest
     {
 
         return [
-            'customer_id' => 'required|exists:customers,id',
+            'customer_id' => 'nullable|exists:customers,id',
             'price' => 'required|min:0|numeric',
             'shipping_address' => 'required|string|max:300',
             'status' => ['nullable', new Enum(OrderStatusEnum::class)],

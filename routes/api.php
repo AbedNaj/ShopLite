@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Auth\AdminAuthController;
 use App\Http\Controllers\Api\V1\Auth\CustomerAuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Api\V1\Admin\OrderItemController;
 use App\Http\Controllers\Api\V1\Admin\SubCategoryController as AdminSubCategoryController;
 use App\Http\Controllers\api\v1\admin\ProductController as adminProductController;
 use App\Http\Controllers\api\v1\admin\ProductImagesController as adminProductImages;
@@ -47,6 +48,7 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('/productImages', adminProductImages::class);
 
             Route::apiResource('/orders', OrderController::class);
+            Route::apiResource('/orderItems', OrderItemController::class);
         });
     });
 

@@ -36,7 +36,7 @@ class OrderController extends Controller
 
         $order =  Order::create([
 
-            'customer_id' => $validated['customer_id'],
+            'customer_id' => $validated['customer_id'] ?? null,
             'price' => $validated['price'],
             'shipping_address' => $validated['shipping_address'],
 

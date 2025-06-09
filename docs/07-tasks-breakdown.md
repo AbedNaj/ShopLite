@@ -75,8 +75,8 @@
 - [x] Connect to API
 
 #### Orders
-- [ ] Order listing page
-- [ ] View order details
+- [x] Order listing page
+- [x] View order details
 - [ ] Update status (pending, shipped, etc.)
 
 ---

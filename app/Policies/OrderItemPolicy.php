@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\OrderItem;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -29,7 +30,8 @@ class OrderItemPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        $adminRole = Role::where('name', 'admin')->value('id');
+        return $user->role_id === $adminRole;
     }
 
     /**
@@ -45,7 +47,8 @@ class OrderItemPolicy
      */
     public function delete(User $user, OrderItem $orderItem): bool
     {
-        return false;
+        $adminRole = Role::where('name', 'admin')->value('id');
+        return $user->role_id === $adminRole;
     }
 
     /**

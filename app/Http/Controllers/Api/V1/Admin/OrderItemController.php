@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreOrderItemRequest;
+use App\Http\Resources\Admin\OrderItemResource;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class OrderItemController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    use AuthorizesRequests;
     public function index()
     {
         //
@@ -18,9 +20,21 @@ class OrderItemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreOrderItemRequest $request)
     {
-        //
+        $this->authorize('create', OrderItem::class);
+
+
+        $validated = $request->validated();
+
+        $orderItem = OrderItem::create([
+            'product_id' => $validated['product_id'],
+            'order_id' => $validated['order_id'],
+            'quantity' => $validated['quantity'],
+            'price' => $validated['price']
+        ]);
+
+        return new OrderItemResource($orderItem);
     }
 
     /**
@@ -44,6 +58,11 @@ class OrderItemController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $orderItem = OrderItem::findOrFail($id);
+        $this->authorize('delete', $orderItem);
+
+        $orderItem->delete();
+
+        return response()->json(['message' => 'Category deleted successfully'], 200);
     }
 }
