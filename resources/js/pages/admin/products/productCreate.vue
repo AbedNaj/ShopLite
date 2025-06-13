@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import DefaultHeader from '@/components/admin/default-header.vue';
 import Button from '@/components/ui/button/Button.vue';
 import Input from '@/components/ui/input/Input.vue';
@@ -30,9 +30,13 @@ const form = ref({
     discount_price: 0,
     stock: 0,
     sub_category_id: '',
+    category_id: '',
     images: [],
     thumbnail: null,
 });
+
+const subCategories = ref([]);
+const categories = ref([]);
 
 const errors = ref({});
 const loading = ref(false);
@@ -44,14 +48,33 @@ const handleImageChange = (event) => {
 const handleThumbnailChange = (event) => {
     form.value.thumbnail = event.target.files[0];
 }
-const categories = ref([]);
 
-async function fetchCategoryData() {
-    const res = await axios.get('/admin/subCategories/actions/for-select');
-    categories.value = res.data.data;
+async function fetchSubCategoryData() {
+
+    try {
+        const res = await axios.get('/admin/subCategories/actions/for-select', {
+            params: {
+
+                category: form.value.category_id
+            }
+        });
+        subCategories.value = res.data.data;
+
+    }
+    catch (err) {
+
+    }
 }
 
+async function fetchCategoryData() {
+    const res = await axios.get('/admin/categories/actions/for-select', {
+        params: {
 
+        }
+    });
+    categories.value = res.data.data;
+
+}
 const submit = async () => {
     loading.value = true;
     errors.value = {};
@@ -60,6 +83,7 @@ const submit = async () => {
     formData.append('name', form.value.name);
     formData.append('description', form.value.description);
     formData.append('sub_category_id', form.value.sub_category_id);
+    formData.append('category_id', form.value.category_id);
     formData.append('price', form.value.price);
     formData.append('stock', form.value.stock);
     formData.append('discount_price', form.value.discount_price);
@@ -84,8 +108,22 @@ const submit = async () => {
     }
 };
 
+watch(() => form.value.category_id, (newVal) => {
+    if (newVal) {
+        fetchSubCategoryData();
+        form.value.sub_category_id = '';
+    } else {
+        subCategories.value = [];
+        form.value.sub_category_id = '';
+    }
+});
 
-onMounted(fetchCategoryData); 
+
+onMounted(() => {
+
+    fetchCategoryData();
+
+}); 
 </script>
 
 <template>
@@ -128,17 +166,36 @@ onMounted(fetchCategoryData);
                 <p class="text-sm mt-1 text-red-500" v-if="errors.stock">{{ errors.stock?.[0] }}</p>
             </div>
 
+
             <div>
-                <label class="block text-sm font-medium mb-1">SubCategory </label>
-                <Select v-model="form.sub_category_id">
+                <label class="block text-sm font-medium mb-1">Category </label>
+                <Select v-model="form.category_id">
                     <SelectTrigger>
                         <SelectValue placeholder="Select Product Cateogry" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
+                            <SelectLabel>Categories</SelectLabel>
+
+                            <SelectItem v-for="category in categories" :key="category.id" :value="category.id">
+                                {{ category.name }}
+                            </SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+                <p class="text-sm mt-1 text-red-500" v-if="errors.category_id">{{ errors.category_id?.[0] }}</p>
+            </div>
+            <div v-if="form.category_id">
+                <label class="block text-sm font-medium mb-1">SubCategory </label>
+                <Select v-model="form.sub_category_id">
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select Product SubCateogry" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
                             <SelectLabel>SubCategories</SelectLabel>
 
-                            <SelectItem v-for="cat in categories" :key="cat.id" :value="cat.id">
+                            <SelectItem v-for="cat in subCategories" :key="cat.id" :value="cat.id">
                                 {{ cat.name }}
                             </SelectItem>
                         </SelectGroup>
@@ -160,7 +217,7 @@ onMounted(fetchCategoryData);
 
             <div class="pt-4">
                 <Button :disabled="loading" @click="submit">
-                    {{ loading ? 'Saving...' : 'Create Category' }}
+                    {{ loading ? 'Saving...' : 'Create Product' }}
                 </Button>
             </div>
         </div>

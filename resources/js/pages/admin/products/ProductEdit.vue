@@ -1,9 +1,12 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import DefaultHeader from '@/components/admin/default-header.vue';
 import Button from '@/components/ui/button/Button.vue';
 import Input from '@/components/ui/input/Input.vue';
 import TextArea from '@/components/ui/textarea/Textarea.vue';
+import { useRouter } from 'vue-router';
+import axios from '@/axios';
+import { useToast } from 'vue-toastification'
 import {
     Select,
     SelectContent,
@@ -34,23 +37,14 @@ import {
 
 const previewImage = ref(null)
 
-function openPreview(imageUrl) {
-    previewImage.value = imageUrl
-}
-import { useRouter } from 'vue-router';
-import axios from '@/axios';
-import { useToast } from 'vue-toastification'
-
-
-
-
 const toast = useToast({ position: 'bottom-right' })
 
 const router = useRouter();
 const ProductID = ref(null);
-const categories = ref([]);
+const subCategories = ref([]);
 const thumbnail = ref();
 const images = ref([]);
+const categories = ref([]);
 
 const form = ref({
     name: '',
@@ -59,12 +53,23 @@ const form = ref({
     discount_price: 0,
     stock: 0,
     sub_category_id: '',
+    category_id: '',
     images: [],
     thumbnail: null,
 });
 
 const errors = ref({});
 const loading = ref(false);
+
+
+function openPreview(imageUrl) {
+    previewImage.value = imageUrl
+}
+
+
+
+
+
 
 const handleImageChange = (event) => {
     form.value.images = Array.from(event.target.files);
@@ -90,24 +95,44 @@ async function fetchProductData() {
 
         form.value.description = productData.description
 
-        form.value.description = productData.description
+        form.value.category_id = productData.category_id;
+        form.value.sub_category_id = productData.sub_category_id;
 
-        form.value.discount_price = productData.discount_price
-        form.value.price = productData.price
-        form.value.stock = productData.stock
+        form.value.discount_price = productData.discount_price;
+        form.value.price = productData.price;
+        form.value.stock = productData.stock;
 
-        form.value.sub_category_id = productData.sub_category_id
+
     });
 
 
 
 }
 
-async function fetchCategoryData() {
-    const res = await axios.get('/admin/subCategories/actions/for-select');
-    categories.value = res.data.data;
-}
+async function fetchSubCategoryData() {
+    try {
+        const res = await axios.get('/admin/subCategories/actions/for-select', {
+            params: {
 
+                category: form.value.category_id
+            }
+        });
+        subCategories.value = res.data.data;
+
+    }
+    catch (err) {
+
+    }
+}
+async function fetchCategoryData() {
+    const res = await axios.get(`/admin/categories/actions/for-select/  `, {
+        params: {
+
+        }
+    });
+    categories.value = res.data.data;
+
+}
 async function removeImage(imageID) {
     try {
         await axios.delete(`/admin/productImages/${imageID}`)
@@ -127,6 +152,7 @@ const submit = async () => {
     formData.append('name', form.value.name);
     formData.append('description', form.value.description);
     formData.append('sub_category_id', form.value.sub_category_id);
+    formData.append('category_id', form.value.category_id);
     formData.append('price', form.value.price);
     formData.append('stock', form.value.stock);
     formData.append('discount_price', form.value.discount_price);
@@ -144,6 +170,8 @@ const submit = async () => {
     try {
         const response = await axios.post(`/admin/products/${ProductID.value}`, formData);
         toast.success('Product updated successfully');
+        form.value.thumbnail = null;
+        form.value.images = [];
 
         images.value = response.data.data.images.map(img => ({
             id: img.id,
@@ -158,6 +186,7 @@ const submit = async () => {
         }
     } finally {
         loading.value = false;
+
     }
 };
 
@@ -167,7 +196,25 @@ const submit = async () => {
 onMounted(() => {
     fetchCategoryData()
     fetchProductData()
-}) 
+
+});
+
+watch(
+    () => form.value.category_id,
+    async (newVal, oldVal) => {
+        if (!newVal) {
+            subCategories.value = [];
+            form.value.sub_category_id = '';
+            return;
+        }
+
+        await fetchSubCategoryData();
+
+        if (!form.value.sub_category_id) {
+            form.value.sub_category_id = '';
+        }
+    }
+);
 </script>
 
 <template>
@@ -209,8 +256,25 @@ onMounted(() => {
                 <Input v-model="form.stock" type="number" min="0" placeholder="Enter Product Stock" />
                 <p class="text-sm mt-1 text-red-500" v-if="errors.stock">{{ errors.stock?.[0] }}</p>
             </div>
-
             <div>
+                <label class="block text-sm font-medium mb-1">Category </label>
+                <Select v-model="form.category_id">
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select Product Cateogry" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>Categories</SelectLabel>
+
+                            <SelectItem v-for="category in categories" :key="category.id" :value="category.id">
+                                {{ category.name }}
+                            </SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+                <p class="text-sm mt-1 text-red-500" v-if="errors.category_id">{{ errors.category_id?.[0] }}</p>
+            </div>
+            <div v-if="form.category_id">
                 <label class="block text-sm font-medium mb-1">SubCategory </label>
                 <Select v-model="form.sub_category_id">
                     <SelectTrigger>
@@ -220,7 +284,7 @@ onMounted(() => {
                         <SelectGroup>
                             <SelectLabel>SubCategories</SelectLabel>
 
-                            <SelectItem v-for="cat in categories" :key="cat.id" :value="cat.id">
+                            <SelectItem v-for="cat in subCategories" :key="cat.id" :value="cat.id">
                                 {{ cat.name }}
                             </SelectItem>
                         </SelectGroup>

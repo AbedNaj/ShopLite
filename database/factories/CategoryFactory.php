@@ -19,6 +19,7 @@ class CategoryFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'description' => $this->faker->sentence(),
+            'image' => 'https://picsum.photos/seed/' . $this->faker->uuid . '/640/480',
 
         ];
     }

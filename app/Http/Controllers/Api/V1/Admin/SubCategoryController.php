@@ -106,10 +106,17 @@ class SubCategoryController extends Controller
         return response()->json(['message' => 'Subcategory deleted successfully'], 200);
     }
 
-    public function forSelect()
+    public function forSelect(Request $request)
     {
         $this->authorize('viewAny', SubCategory::class);
-        $subCategories =  SubCategory::select('id', 'name')->orderBy('name')->get();
+
+        $query = SubCategory::select('id', 'name', 'category_id')->orderBy('name');
+
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->input('category'));
+        }
+
+        $subCategories = $query->get();
 
         return new SubCategoryResource($subCategories);
     }

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Role;
 use App\Models\SubCategory;
@@ -46,7 +47,7 @@ class ProductTest extends TestCase
 
         $user = $this->adminUser();
         $subCategory = SubCategory::factory()->create([
-            'category_id' => \App\Models\Category::factory(),
+            'category_id' => Category::factory(),
         ]);
 
         $data = [
@@ -55,6 +56,7 @@ class ProductTest extends TestCase
             'price' => $this->faker->randomFloat(2, 10, 1000),
             'stock' => $this->faker->numberBetween(1, 100),
             'sub_category_id' => $subCategory->id,
+            'category_id' => $subCategory->category_id,
             'thumbnail' => UploadedFile::fake()->image('thumbnail.jpg'),
         ];
 
@@ -63,7 +65,6 @@ class ProductTest extends TestCase
 
         $response->assertStatus(201);
     }
-
 
 
     public function test_admin_can_update_product(): void

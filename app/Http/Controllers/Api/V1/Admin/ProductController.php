@@ -33,6 +33,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:products,name',
             'sub_category_id' => 'required|exists:sub_categories,id',
+            'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'status' => 'nullable|in:' . $status,
@@ -63,6 +64,7 @@ class ProductController extends Controller
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
             'sub_category_id' => $validated['sub_category_id'],
+            'category_id' => $validated['category_id'],
             'status' => $validated['status'] ?? ProductStatusEnum::Active->value(),
             'price' => $validated['price'],
             'stock' => $validated['stock'] ?? 0,
@@ -70,7 +72,7 @@ class ProductController extends Controller
             'thumbnail' => $thumbnail
         ]);
 
-        if ($request->hasFile('images')) {
+        if ($request->hasFile('images') && is_array($request->file('images'))) {
 
 
             foreach ($request->file('images') as $index => $image) {
@@ -107,6 +109,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:products,name,' . $product->id,
             'sub_category_id' => 'required|exists:sub_categories,id',
+            'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'nullable|integer|min:0',
@@ -141,6 +144,7 @@ class ProductController extends Controller
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
             'sub_category_id' => $validated['sub_category_id'],
+            'category_id' => $validated['category_id'],
             'price' => $validated['price'] ?? 0,
             'stock' => $validated['stock'] ?? 0,
             'discount_price' => $validated['discount_price'] ?? 0,
