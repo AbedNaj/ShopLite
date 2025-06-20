@@ -4,13 +4,16 @@
 use App\Http\Controllers\Api\V1\Admin\OrderController;
 use App\Http\Controllers\Api\V1\Auth\AdminAuthController;
 use App\Http\Controllers\Api\V1\Auth\CustomerAuthController;
+use App\Http\Controllers\Api\V1\Shop\CategoryController as shopCategoryController;
 use App\Http\Controllers\Api\V1\Shop\HomeController;
+use App\Http\Controllers\Api\V1\Shop\SubCategoryController as shopSubCategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Api\V1\Admin\OrderItemController;
 use App\Http\Controllers\Api\V1\Admin\SubCategoryController as AdminSubCategoryController;
 use App\Http\Controllers\api\v1\admin\ProductController as adminProductController;
 use App\Http\Controllers\api\v1\admin\ProductImagesController as adminProductImages;
+use App\Http\Controllers\Api\V1\Shop\ProductsController as shopProductController;
 
 Route::prefix('v1')->group(function () {
 
@@ -64,5 +67,9 @@ Route::prefix('v1')->group(function () {
             Route::get('/recentProducts', [HomeController::class, 'recentProducts']);
             Route::get('/discountProducts', [HomeController::class, 'discountProducts']);
         });
+
+        Route::apiResource('/categories', shopCategoryController::class);
+        Route::apiResource('/subCategories', shopSubCategoryController::class);
+        Route::apiResource('/products', shopProductController::class);
     });
 });

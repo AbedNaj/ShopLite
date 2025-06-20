@@ -170,6 +170,7 @@ onMounted(() => {
 
         <main class="container flex-1 mx-auto px-4 py-8">
             <slot />
+            <router-view />
         </main>
 
         <footer class="bg-gradient-to-r from-card to-background border-t border-border/50 mt-16">

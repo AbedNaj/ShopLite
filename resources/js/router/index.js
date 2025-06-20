@@ -1,10 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/pages/Home.vue'
-import adminRoutes from './admin'
-
+import { createRouter, createWebHistory } from 'vue-router';
+import Home from '@/pages/Home.vue';
+import adminRoutes from './admin';
+import shopRoutes from './shop';
 const routes = [
     { path: '/', name: 'home', component: Home },
     ...adminRoutes,
+    ...shopRoutes,
 ]
 
 const router = createRouter({

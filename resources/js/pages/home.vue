@@ -3,7 +3,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import { ref, onMounted } from 'vue';
 import axios from '@/axios';
 
-import ProductSection from '@/components/shop/ProductSection.vue';
+import ProductSection from '@/components/shop/HomeSection.vue';
 
 
 
